@@ -55,7 +55,7 @@ public class LibraryService {
       return ResultWithNext.failure();
     }
     Book entity = book.get(); // 1. Can return only who borrowed
-    if (!entity.getLoanedTo().equals(memberId)) {
+    if (entity.getLoanedTo() == null || !entity.getLoanedTo().equals(memberId)) {
       return ResultWithNext.failure();
     }
     String nextMember = null;
@@ -133,13 +133,10 @@ public class LibraryService {
     if (!memberRepository.existsById(memberId)) {
       return false;
     }
-    int active = 0;
-    for (Book book : bookRepository.findAll()) {
-      if (memberId.equals(book.getLoanedTo())) {
-        active++;
-      }
-    }
-    return active < MAX_LOANS;
+    int loans =
+        bookRepository.countByLoanedTo(
+            memberId); // 3. Optimization: Check loan limit via repository count.
+    return loans < MAX_LOANS;
   }
 
   public List<Book> searchBooks(String titleContains, Boolean availableOnly, String loanedTo) {

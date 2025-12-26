@@ -37,3 +37,10 @@ backend/api/spy.log
 # Internal-only
 internal/
 backend/hidden-tests/
+
+# Backend Gradle (Universal)
+.gradle/
+**/build/
+**/out/
+**/bin/
+!gradle-wrapper.jar
